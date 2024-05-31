@@ -1,34 +1,42 @@
-from flask import Blueprint, request, jsonify
-from app import db
+from flask import Blueprint, request, render_template, redirect, url_for, flash
+from app import db, bcrypt
 from models.user import User
 
 auth_bp = Blueprint('auth', __name__)
 
-@auth_bp.route('/signup', methods=['POST'])
+@auth_bp.route('/signup', methods=['GET', 'POST'])
 def signup():
-    data = request.get_json()
-    username = data.get('username')
-    email = data.get('email')
-    password = data.get('password')
+    if request.method == 'POST':
+        username = request.form.get('username')
+        email = request.form.get('email')
+        password = request.form.get('password')
 
-    if User.query.filter_by(username=username).first() or User.query.filter_by(email=email).first():
-        return jsonify({'message': 'User already exists'}), 400
+        if User.query.filter_by(username=username).first() or User.query.filter_by(email=email).first():
+            flash('User already exists', 'danger')
+            return redirect(url_for('auth.signup'))
 
-    new_user = User(username=username, email=email)
-    new_user.set_password(password)
-    db.session.add(new_user)
-    db.session.commit()
+        new_user = User(username=username, email=email)
+        new_user.set_password(password)
+        db.session.add(new_user)
+        db.session.commit()
 
-    return jsonify({'message': 'User created successfully'}), 201
+        flash('User created successfully', 'success')
+        return redirect(url_for('auth.login'))
 
-@auth_bp.route('/login', methods=['POST'])
+    return render_template('signup.html')
+
+@auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
-    data = request.get_json()
-    username = data.get('username')
-    password = data.get('password')
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
 
-    user = User.query.filter_by(username=username).first()
-    if user is None or not user.check_password(password):
-        return jsonify({'message': 'Invalid username or password'}), 401
+        user = User.query.filter_by(username=username).first()
+        if user is None or not user.check_password(password):
+            flash('Invalid username or password', 'danger')
+            return redirect(url_for('auth.login'))
 
-    return jsonify({'message': 'Logged in successfully'}), 200
+        flash('Logged in successfully', 'success')
+        return redirect(url_for('auth.login'))
+
+    return render_template('login.html')
