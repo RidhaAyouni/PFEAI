@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Resume</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    color: rgb(3, 3, 3);
+}
+
+html, body {
+  
+
+  display: flex;
+  height: 100%;
+  width: 100%;
+  place-items: center;
+  background-color: #0F2027;
+  background-size: 400% 400%;
+  height: 100vh;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    flex-direction: row;
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+::selection {
+    background: white;
+    color: #fff;
+}
+
+.container {
+    max-width: 550px;
+    margin: 180px auto;
+    padding: 20px;
+    background-color: #D3959B;
+    border-radius: 10px;
+    box-shadow: 7px 7px 7px 7px rgba(99, 99, 99, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 550px;
+    opacity: 0.9;
+}
+
+form {
+    width: 500px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    background-color: #D3959B;
+    padding: 20px;
+    border-radius: 10px;
+    
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    width: 48%;
+}
+
+.upload_resume {
+    width: 100%;
+}
+
+label {
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+input[type="text"],
+input[type="file"],
+input[type="email"],
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 5px;
+    border: 1px solid #dddddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+textarea {
+    height: 100px;
+}
+
+button[type="submit"] {
+    width: 150px;
+    margin: 20px auto 0;
+    padding: 12px;
+    background-color: #0F2027;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background-color: #D3959B;
+}
+
+.sidebar {
+    position: fixed;
+    width: 17%;
+    height: 100vh;
+    background: #d7d2cc;
+    font-size: 0.65em;
+    top: 0;
+    bottom: 0;
+    border-radius: 15px;
+    background-color: #0F2027;
+    border: 2px solid #D3959B;
+}
+
+.nav {
+    position: relative;
+    margin: 0 15%;
+    text-align: right;
+    top: 50%;
+    transform: translateY(-50%);
+    font-weight: bold;
+}
+
+.nav ul {
+    list-style: none;
+}
+
+.nav ul li {
+    position: relative;
+    margin: 3.2em 0;
+}
+
+.nav ul li a {
+    line-height: 5em;
+    text-transform: uppercase;
+    text-decoration: none;
+    letter-spacing: 0.4em;
+    color: #D3959B;
+    display: block;
+    transition: all ease-out 300ms;
+}
+
+.nav ul li.active a {
+    color: white;
+}
+
+.nav ul li:not(.active):hover a {
+    color: white;
+}
+
+.nav ul li::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 0.2em;
+    background: black;
+    left: 0;
+    bottom: 0;
+    background-image: linear-gradient(to right, #D3959B, #00223E);
+}
+
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <nav class="nav">
+            <ul>
+                <li><a href="/">Welcome</a></li>
+                <li><a href="/job_app">Apply Job</a></li>
+                <li><a href="/job_list">Jobs List</a></li>
+                <li><a href="/upload_resume">Upload Resume</a></li>
+                <li><a href="/dashboard">Dashboard</a></li>
+                <li><a href="/personal_info">Personal info</a></li>
+                <li><a href="/auth/logout">Logout</a></li>
+            </ul>
+        </nav>
+    </aside>
+    <div class="container">
+        <form method="post" enctype="multipart/form-data">
+            <div class="select_job">
+                <label for="job_name">Select Job Name:</label>
+                <select id="job_name" name="job_name" required>
+                    {% for job_name in job_names %}
+                        <option value="{{ job_name }}">{{ job_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="upload_resume">
+                <label for="resume">Upload Resume:</label>
+                <input type="file" id="resume" name="resume" accept=".pdf" required multiple>
+            </div>
+            <button type="submit">Validate</button>
+        </form>
+    </div>
+</body>
+</html>

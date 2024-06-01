@@ -1,5 +1,5 @@
-from flask import Blueprint, request, render_template, redirect, url_for, flash
-from app import db, bcrypt
+from flask import Blueprint, request, render_template, redirect, url_for, flash, session
+from extensions import db
 from models.user import User
 
 auth_bp = Blueprint('auth', __name__)
@@ -7,15 +7,19 @@ auth_bp = Blueprint('auth', __name__)
 @auth_bp.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
-        username = request.form.get('username')
-        email = request.form.get('email')
-        password = request.form.get('password')
+        first_name = request.form.get('First_name')
+        last_name = request.form.get('Last_name')
+        username = request.form.get('Username')
+        email = request.form.get('Email')
+        password = request.form.get('Password')
 
+        # Check if the user already exists
         if User.query.filter_by(username=username).first() or User.query.filter_by(email=email).first():
             flash('User already exists', 'danger')
             return redirect(url_for('auth.signup'))
 
-        new_user = User(username=username, email=email)
+        # Create a new user instance
+        new_user = User(first_name=first_name, last_name=last_name, username=username, email=email)
         new_user.set_password(password)
         db.session.add(new_user)
         db.session.commit()
@@ -28,15 +32,22 @@ def signup():
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
+        email = request.form.get('Email')
+        password = request.form.get('Password')
 
-        user = User.query.filter_by(username=username).first()
+        user = User.query.filter_by(email=email).first()
         if user is None or not user.check_password(password):
-            flash('Invalid username or password', 'danger')
+            flash('Invalid email or password', 'danger')
             return redirect(url_for('auth.login'))
 
         flash('Logged in successfully', 'success')
-        return redirect(url_for('auth.login'))
+        return redirect(url_for('job_app'))  # Redirect to the job_app page
 
     return render_template('login.html')
+
+@auth_bp.route('/logout')
+def logout():
+    # Clear session data
+    session.clear()
+    flash('Logged out successfully', 'success')
+    return redirect(url_for('auth.login'))

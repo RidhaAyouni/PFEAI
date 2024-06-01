@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    color: white;
+}
+
+html, body {
+  
+
+  display: flex;
+  height: 100%;
+  width: 100%;
+  place-items: center;
+  background-color: #0F2027;
+  background-size: 400% 400%;
+  height: 100vh;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    flex-direction: row;
+}
+
+.sidebar {
+    position: fixed;
+    width: 17%;
+    height: 100vh;
+    background: #d7d2cc;
+    font-size: 0.65em;
+    top: 0;
+    bottom: 0;
+    border-radius: 15px;
+    background-color: #0F2027;
+    border: 2px solid #D3959B;
+}
+
+.nav {
+    position: relative;
+    margin: 0 15%;
+    text-align: right;
+    top: 50%;
+    transform: translateY(-50%);
+    font-weight: bold;
+}
+
+.nav ul {
+    list-style: none;
+}
+
+.nav ul li {
+    position: relative;
+    margin: 3.2em 0;
+}
+
+.nav ul li a {
+    line-height: 5em;
+    text-transform: uppercase;
+    text-decoration: none;
+    letter-spacing: 0.4em;
+    color: #D3959B;
+    display: block;
+    transition: all ease-out 300ms;
+}
+
+.nav ul li.active a {
+    color: white;
+}
+
+.nav ul li:not(.active):hover a {
+    color: white;
+}
+
+.nav ul li::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 0.2em;
+    background: black;
+    left: 0;
+    bottom: 0;
+    background-image: linear-gradient(to right, #D3959B, #00223E);
+}
+
+
+.dashboard{
+    margin-left: 500px;
+}
+    </style>
+</head>
+<body>
+    <div>
+        <aside class="sidebar">
+            <nav class="nav">
+                <ul>
+                    <li><a href="/">Welcome</a></li>
+                    <li><a href="/job_app">Apply Job</a></li>
+                    <li><a href="/job_list">Jobs List</a></li>
+                    <li><a href="/upload_resume">Upload Resume</a></li>
+                    <li><a href="/dashboard">Dashboard</a></li>
+                    <li><a href="/personal_info">Personal info</a></li>
+                    <li><a href="/auth/logout">Logout</a></li>
+                </ul>
+            </nav>
+        </aside>
+    </div>
+        <div class="dashboard">
+        <h2>Dashboard </h2>
+        <p>This is just a placeholder for the dashboard content.</p>
+        <!-- Add more dashboard elements here -->
+        </div>
+</body>
+</html>
