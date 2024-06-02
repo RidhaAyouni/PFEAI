@@ -1,2 +1,3 @@
 save in the databse 
 create the asssociate models = class 
+extract data by the AI LLM GPT finetuned and then save it to teh db  (Endpoint App.route('processing'))  ===========>  data get it from  csv files 
