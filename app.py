@@ -47,50 +47,105 @@ def create_app():
         job_apps = JobApp.query.all()
         return render_template('job_list.html', job_apps=job_apps)
 
+    # @app.route('/upload_resume', methods=['GET', 'POST'])
+    # def upload_resume():
+    #     job_apps = JobApp.query.all()
+    #     job_names = [job.job_title for job in job_apps]
+
+    #     if request.method == 'POST':
+    #         job_name = request.form.get('job_name')
+    #         resumes = request.files.getlist('resume')
+
+    #         for resume in resumes:
+    #             if not resume:
+    #                 flash('No file uploaded', 'danger')
+    #                 continue
+
+    #             if resume and resume.filename.endswith('.pdf'):
+    #                 if not os.path.exists(app.config['UPLOAD_FOLDER']):
+    #                     os.makedirs(app.config['UPLOAD_FOLDER'])
+    #                 resume_path = os.path.join(app.config['UPLOAD_FOLDER'], resume.filename)
+    #                 resume.save(resume_path)
+
+    #                 # Perform OCR on the resume
+    #                 extracted_text = extract_text_with_layout_pdfplumber(resume_path)
+                    
+
+    #                 # Save the extracted text to a text file
+    #                 text_file_path = os.path.splitext(resume_path)[0] + '.txt'
+    #                 with open(text_file_path, 'w', encoding='utf-8') as text_file:
+    #                     text_file.write(extracted_text)
+
+    #                 # Create a new Resume object for each uploaded file and add it to the database
+    #                 new_resume = Resume(job_name=job_name, filename=resume.filename)
+    #                 db.session.add(new_resume)
+
+    #             else:
+    #                 flash('Invalid file format. Only PDF allowed.', 'danger')
+
+    #         # Commit all uploaded resumes to the database
+    #         db.session.commit()
+
+    #         flash('Resumes uploaded successfully', 'success')
+    #         return redirect(url_for('upload_resume'))
+
+    #     return render_template('upload_resume.html', job_names=job_names)
+
+    # @app.route('/dashboard')
     @app.route('/upload_resume', methods=['GET', 'POST'])
     def upload_resume():
         job_apps = JobApp.query.all()
         job_names = [job.job_title for job in job_apps]
-
+    
         if request.method == 'POST':
             job_name = request.form.get('job_name')
             resumes = request.files.getlist('resume')
-
+    
             for resume in resumes:
                 if not resume:
                     flash('No file uploaded', 'danger')
                     continue
-
+    
                 if resume and resume.filename.endswith('.pdf'):
                     if not os.path.exists(app.config['UPLOAD_FOLDER']):
                         os.makedirs(app.config['UPLOAD_FOLDER'])
                     resume_path = os.path.join(app.config['UPLOAD_FOLDER'], resume.filename)
                     resume.save(resume_path)
-
-                    # Perform OCR on the resume
-                    extracted_text = extract_text_with_layout_pdfplumber(resume_path)
-
-                    # Save the extracted text to a text file
-                    text_file_path = os.path.splitext(resume_path)[0] + '.txt'
-                    with open(text_file_path, 'w', encoding='utf-8') as text_file:
-                        text_file.write(extracted_text)
-
+    
                     # Create a new Resume object for each uploaded file and add it to the database
-                    new_resume = Resume(job_name=job_name, filename=resume.filename)
+                    new_resume = Resume(job_name=job_name, filename=resume.filename, processing_status='uploaded')
                     db.session.add(new_resume)
-
+                    db.session.commit()  # Commit to get the ID
+    
+                    try:
+                        # Perform OCR on the resume
+                        extracted_text = extract_text_with_layout_pdfplumber(resume_path)
+    
+                        # Save the extracted text to a text file
+                        text_file_path = os.path.splitext(resume_path)[0] + '.txt'
+                        with open(text_file_path, 'w', encoding='utf-8') as text_file:
+                            text_file.write(extracted_text)
+    
+                        # Update the Resume object with the OCR text and text file path
+                        new_resume.text_file_path = text_file_path
+                        new_resume.ocr_text = extracted_text
+                        new_resume.processing_status = 'processed'
+                    except Exception as e:
+                        # Update the Resume object with the failure status
+                        new_resume.processing_status = f'failed: {str(e)}'
+    
+                    # Commit the updated resume details to the database
+                    db.session.commit()
+    
                 else:
                     flash('Invalid file format. Only PDF allowed.', 'danger')
-
-            # Commit all uploaded resumes to the database
-            db.session.commit()
-
+    
             flash('Resumes uploaded successfully', 'success')
             return redirect(url_for('upload_resume'))
-
+    
         return render_template('upload_resume.html', job_names=job_names)
+    
 
-    @app.route('/dashboard')
     def dashboard():
         return render_template('dashboard.html')
 
@@ -123,8 +178,17 @@ def create_app():
     @app.route('/')
     def index():
         return redirect(url_for('auth.login'))
-
-    return app
+    # @app.route('/processing')
+    # def processdatabyAI():
+    #     save the skills in skiils table
+    #      experience 
+    #  education 
+    #  certification 
+    #  ......   save in case if its already exists
+    #  keep it nullable or empty  kn fmch data 
+    #to  
+    #
+    # return app
 
 if __name__ == '__main__':
     app = create_app()
