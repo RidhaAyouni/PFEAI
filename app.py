@@ -1,10 +1,13 @@
-from flask import Flask, redirect, url_for, request, flash, render_template
+from flask import Flask, redirect, url_for, request, flash, render_template, session
 from config import Config
 from extensions import db, migrate
 from routes.auth import auth_bp
 from models.job_app import JobApp
 from models.resume import Resume
 import os
+from models.user import User
+from ocr_utils import extract_text_with_layout_pdfplumber
+
 
 def create_app():
     app = Flask(__name__, template_folder="templates")
@@ -61,7 +64,16 @@ def create_app():
                 if resume and resume.filename.endswith('.pdf'):
                     if not os.path.exists(app.config['UPLOAD_FOLDER']):
                         os.makedirs(app.config['UPLOAD_FOLDER'])
-                    resume.save(os.path.join(app.config['UPLOAD_FOLDER'], resume.filename))
+                    resume_path = os.path.join(app.config['UPLOAD_FOLDER'], resume.filename)
+                    resume.save(resume_path)
+
+                    # Perform OCR on the resume
+                    extracted_text = extract_text_with_layout_pdfplumber(resume_path)
+
+                    # Save the extracted text to a text file
+                    text_file_path = os.path.splitext(resume_path)[0] + '.txt'
+                    with open(text_file_path, 'w', encoding='utf-8') as text_file:
+                        text_file.write(extracted_text)
 
                     # Create a new Resume object for each uploaded file and add it to the database
                     new_resume = Resume(job_name=job_name, filename=resume.filename)
@@ -84,7 +96,29 @@ def create_app():
 
     @app.route('/personal_info')
     def personal_info():
-        return render_template('personal_info.html')
+        user = User.query.filter_by(id=session.get('user_id')).first()  # Assuming you store user's id in session
+        return render_template('personal_info.html', user=user)
+    
+    @app.route('/update_personal_info', methods=['GET', 'POST'])
+    def update_personal_info():
+        # Retrieve the user's information from the database
+        user_id = session.get('user_id')
+        user = User.query.get(user_id)
+
+        if request.method == 'POST':
+            # Update user information based on the form data
+            user.first_name = request.form.get('first_name')
+            user.last_name = request.form.get('last_name')
+            user.email = request.form.get('email')
+
+            # Commit the changes to the database
+            db.session.commit()
+
+            flash('Personal information updated successfully', 'success')
+            return redirect(url_for('personal_info'))
+
+        # Render the template with the user's information pre-filled in the form
+        return render_template('update_personal_info.html', user=user)
 
     @app.route('/')
     def index():

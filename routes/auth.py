@@ -39,6 +39,8 @@ def login():
         if user is None or not user.check_password(password):
             flash('Invalid email or password', 'danger')
             return redirect(url_for('auth.login'))
+        
+        session['user_id'] = user.id
 
         flash('Logged in successfully', 'success')
         return redirect(url_for('job_app'))  # Redirect to the job_app page

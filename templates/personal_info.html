@@ -10,9 +10,8 @@
 * {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
-    color: white;
+    color: #2c3e50;
 }
 
 html, body {
@@ -49,9 +48,9 @@ body {
 }
 
 .PersonalInfo {
-    max-width: 550px;
-    margin: 180px auto;
-    padding: 20px;
+    width: 200px;
+    margin: 600px auto;
+    padding: 20 px;
     background-color: #D3959B;
     border-radius: 10px;
     box-shadow: 7px 7px 7px 7px rgba(99, 99, 99, 0.1);
@@ -59,30 +58,34 @@ body {
     flex-direction: column;
     align-items: center;
     margin-left: 550px;
+    margin-right: 600px;
 }
 
 form {
-    width: 500px;
+    width: 400px;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     background-color: #D3959B;
-    padding: 20px;
+    padding: 40px;
     border-radius: 10px;
+    margin-right: 200px;
+    margin-left: 500px;
 }
 
 .form-group {
     display: flex;
     flex-direction: column;
-    width: 48%;
-}
+    width: 300px;
+    justify-content: left;
+    align-items: flex-start;
 
-.form-group.full {
-    width: 100%;
+
+   
 }
 
 label {
-    margin-bottom: 8px;
+    margin-bottom: 20px;
     font-weight: bold;
     color: #2c3e50;
 }
@@ -93,7 +96,7 @@ input[type="email"],
 textarea {
     width: 100%;
     padding: 10px;
-    margin-bottom: 5px;
+    margin-bottom: 15px;
     border: 1px solid #dddddd;
     border-radius: 5px;
     box-sizing: border-box;
@@ -101,22 +104,6 @@ textarea {
 
 textarea {
     height: 100px;
-}
-
-button[type="submit"] {
-    width: 150px;
-    margin: 20px auto 0;
-    padding: 12px;
-    background-color: #0F2027;
-    color: #ffffff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-button[type="submit"]:hover {
-    background-color: #D3959B;
 }
 
 .sidebar {
@@ -161,11 +148,11 @@ button[type="submit"]:hover {
 }
 
 .nav ul li.active a {
-    color: white;
+    color: #2c3e50;
 }
 
 .nav ul li:not(.active):hover a {
-    color: white;
+    color: #2c3e50;
 }
 
 .nav ul li::after {
@@ -181,6 +168,7 @@ button[type="submit"]:hover {
 
 .PersonalInfo {
     margin-left: 600px;
+    
 }
 
 
@@ -188,11 +176,30 @@ button[type="submit"]:hover {
     border: none;
     background-color: transparent;
     cursor: pointer;
-    color: blue;
-    text-decoration: underline;
+    color:white;
+    text-decoration:wavy;
+    border-radius: 5px;
 }
 .editable:hover {
-    text-decoration: none;
+    text-decoration: wavy;
+}
+
+button[type="submit"] {
+    width: 30%;
+    margin: 50px;
+    padding: 5%;
+    background-color: #2c3e50;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    justify-items: center;
+    margin-left: 120px;
+}
+
+button[type="submit"]:hover {
+    background-color: #D3959B;
 }
     </style>
 </head>
@@ -201,7 +208,7 @@ button[type="submit"]:hover {
         <aside class="sidebar">
             <nav class="nav">
                 <ul>
-                    <li><a href="/">Welcome</a></li>
+                    <li><a href="#">Welcome</a></li>
                     <li><a href="/job_app">Apply Job</a></li>
                     <li><a href="/job_list">Jobs List</a></li>
                     <li><a href="/upload_resume">Upload Resume</a></li>
@@ -215,12 +222,32 @@ button[type="submit"]:hover {
     <div class="PersonalInfo">
     <form>
     <h1>Personal Information</h1>
-    <div>
-        <p><strong>Username:</strong> <span id="username" class="editable" contenteditable="true">{{username}}</span></p>
-        <p><strong>Email:</strong> <span id="email" class="editable" contenteditable="true">{{email }}</span></p>
+    <div class="form-group">
+        <p><strong>First Name:</strong><span id="First_name" class="editable" contenteditable="true">{{user.first_name }}</span></p>
+        <p><strong>Last Name:</strong> <span id="LAst_name" class="editable" contenteditable="true">{{user.last_name }}</span></p>
+        <p><strong>Username:</strong> <span id="username" class="editable" contenteditable="true">{{user.username}}</span></p>
+        <p><strong>Email:</strong> <span id="email" class="editable" contenteditable="true">{{user.email }}</span></p>
+        <p><strong>Password</strong> <span id="password" class="editable" contenteditable="true">{{user.password }}</span></p>
     </div>
+    <button type="submit" id="updateButton">Update</button>
     </form>
    </div>
-   <script src="../static/js/personal_Info.js"></script>
+   <script>
+    function updateUser(field, value) {
+        // Make an AJAX request to update user data
+        // Replace this with your actual implementation
+        console.log('Updating ' + field + ' to ' + value);
+    }
+
+    // Add event listener for the update button
+    document.getElementById('updateButton').addEventListener('click', function() {
+        // Iterate over editable fields and update the user data
+        document.querySelectorAll('.editable').forEach(function(element) {
+            var field = element.id;
+            var value = element.innerText.trim();
+            updateUser(field, value);
+        });
+    });
+</script>
 </body>
 </html>
