@@ -158,7 +158,9 @@ class CVsInfoExtractor:
     def process_cv(resume):
         try:
             cv_content = resume.ocr_text
+            print(cv_content)
             if cv_content:
+
                 json_response = CVsInfoExtractor._call_gpt_for_cv_info_extraction(cv_content)
                 if json_response:
                     # Parse Date of Birth from JSON response
