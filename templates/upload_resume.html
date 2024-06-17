@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload Resume</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
     <style>
         @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
 
@@ -190,31 +191,33 @@ button[type="submit"]:hover {
         <nav class="nav">
             <ul>
                 <li><a href="#">Welcome</a></li>
-                <li><a href="/job_app">Apply Job</a></li>
-                <li><a href="/job_list">Jobs List</a></li>
-                <li><a href="/upload_resume">Upload Resume</a></li>
-                <li><a href="/dashboard">Dashboard</a></li>
-                <li><a href="/personal_info">Personal info</a></li>
-                <li><a href="/auth/logout">Logout</a></li>
+                    <li><a href="/job_app">Apply Job</a></li>
+                    <li><a href="/job_list">Jobs List</a></li>
+                    <li><a href="/upload_resume">Upload Resume</a></li>
+                    <li><a href="/process_CV">process CV</a></li>
+                    <li><a href="/dashboard">Dashboard</a></li>
+                    <li><a href="/personal_info">Personal info</a></li>
+                    <li><a href="/auth/logout">Logout</a></li>
             </ul>
         </nav>
     </aside>
     <div class="container">
-        <form method="post" enctype="multipart/form-data">
-            <div class="select_job">
-                <label for="job_name">Select Job Name:</label>
-                <select id="job_name" name="job_name" required>
+        <form method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="job_name">Job Name:</label>
+                <select class="form-control" id="job_name" name="job_name">
                     {% for job_name in job_names %}
                         <option value="{{ job_name }}">{{ job_name }}</option>
                     {% endfor %}
                 </select>
             </div>
-            <div class="upload_resume">
-                <label for="resume">Upload Resume:</label>
-                <input type="file" id="resume" name="resume" accept=".pdf" required multiple>
+            <div class="form-group">
+                <label for="resume">Upload Resumes:</label>
+                <input type="file" class="form-control-file" id="resume" name="resume" multiple>
             </div>
-            <button type="submit">Validate</button>
-        </form>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>        
+        
     </div>
 </body>
 </html>
